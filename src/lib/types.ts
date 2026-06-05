@@ -10,6 +10,15 @@ export interface PlatformOutputDTO {
   error?: string;
 }
 
+/** A semantically-similar past generation (creative feature). */
+export interface SimilarConcept {
+  id: string;
+  prompt: string;
+  platforms: PlatformKey[];
+  created_at: string;
+  similarity: number;
+}
+
 /** Response of POST /api/generate. */
 export interface GenerateResponse {
   id: string;
@@ -17,6 +26,8 @@ export interface GenerateResponse {
   platforms: PlatformKey[];
   created_at: string;
   results: PlatformOutputDTO[];
+  /** Past concepts most similar to this one (by prompt embedding). */
+  similar: SimilarConcept[];
 }
 
 /** A history record (generation + its outputs) from GET /api/generations. */

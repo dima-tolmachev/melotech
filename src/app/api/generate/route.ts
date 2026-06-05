@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { generateForPlatform } from "@/lib/generate";
+import { findSimilarConcepts, generateForPlatform } from "@/lib/generate";
 import { embed } from "@/lib/openai";
 import { isPlatformKey, PLATFORM_KEYS } from "@/lib/platforms";
 import { isRateLimited, RATE_LIMIT_PER_MINUTE } from "@/lib/rate-limit";
@@ -99,6 +99,11 @@ export async function POST(request: Request) {
     await supabase.from("platform_outputs").insert(rows);
   }
 
+  // Creative feature: surface semantically-similar past concepts (best-effort).
+  const similar = embedding
+    ? await findSimilarConcepts(embedding, generation.id)
+    : [];
+
   const response: GenerateResponse = {
     id: generation.id,
     prompt,
@@ -111,6 +116,7 @@ export async function POST(request: Request) {
       similarity: r.similarity,
       error: r.error,
     })),
+    similar,
   };
 
   return NextResponse.json(response, { status: 200 });

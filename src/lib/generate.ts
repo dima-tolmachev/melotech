@@ -2,6 +2,7 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import { GENERATION_MODEL, openai } from "./openai";
 import { getPlatform, type PlatformKey } from "./platforms";
 import { supabase } from "./supabase";
+import type { SimilarConcept } from "./types";
 
 export type OutputSource = "llm" | "cache";
 
@@ -61,6 +62,24 @@ async function semanticFallback(
 
   const match = data[0] as { content: Record<string, unknown>; similarity: number };
   return { content: match.content, similarity: match.similarity };
+}
+
+/**
+ * Creative feature: find past concepts semantically similar to this one.
+ * Reuses the stored prompt embeddings — surfaces "you've explored this before".
+ */
+export async function findSimilarConcepts(
+  embedding: number[],
+  excludeId: string,
+): Promise<SimilarConcept[]> {
+  const { data, error } = await supabase.rpc("match_similar_generations", {
+    query_embedding: JSON.stringify(embedding),
+    exclude_id: excludeId,
+    match_threshold: 0.3,
+    match_count: 3,
+  });
+  if (error || !data) return [];
+  return data as SimilarConcept[];
 }
 
 /**

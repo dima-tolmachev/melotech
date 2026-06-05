@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { OutputCard } from "@/components/OutputCard";
 import { HistoryPanel } from "@/components/HistoryPanel";
+import { SimilarConcepts } from "@/components/SimilarConcepts";
 import { generate } from "@/lib/api-client";
 import { PLATFORM_KEYS, PLATFORMS, type PlatformKey } from "@/lib/platforms";
 import type { GenerateResponse } from "@/lib/types";
@@ -113,6 +114,17 @@ export default function Home() {
             ))}
           </div>
         </section>
+      )}
+
+      {/* --- Creative feature: similar past concepts --- */}
+      {mutation.data && (
+        <SimilarConcepts
+          items={mutation.data.similar}
+          onReuse={(p) => {
+            setPrompt(p);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        />
       )}
 
       {/* --- History with platform filter --- */}

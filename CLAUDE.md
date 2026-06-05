@@ -48,6 +48,10 @@ decisions. This file documents that workflow honestly, as required by the brief.
 - **Config-driven platforms.** Rather than hardcoding three platforms, the
   registry (`src/lib/platforms.ts`) makes each platform one declarative entry —
   directly addressing the brief's "50+ platforms" framing.
+- **Creative feature reuses existing infra.** "Similar past concepts" (the bonus
+  feature) is built on the embeddings already stored for the fallback cache —
+  one new pgvector RPC, no new data plumbing. Verified end-to-end through the
+  real UI (80% match surfaced for a related lo-fi concept).
 
 ## What was verified, not assumed
 

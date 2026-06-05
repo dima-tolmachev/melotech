@@ -37,6 +37,12 @@ study.
   similarity) and labels it as a cached result, instead of failing the request.
 - **Rate limiting** at ≤ 3 generations/minute, backed by the DB so it holds on
   serverless/multi-instance deployments.
+- **Creative feature — "Similar past concepts".** After each generation, the
+  pipeline surfaces the most semantically-similar past concepts (pgvector
+  cosine similarity over the stored prompt embeddings) with a match score and a
+  one-click "Use concept" action. Reuses the exact embedding layer that powers
+  the fallback cache — useful for a 50-platform catalog where you want to avoid
+  re-treading ideas and quickly riff on what worked.
 - **Locked-down DB.** RLS is on with no policies; only server-side code (with
   the service-role key) can touch the database.
 
