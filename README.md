@@ -75,9 +75,10 @@ Required env vars (see `.env.example`):
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `RATE_LIMIT_PER_MINUTE` (default 3)
 
-The database schema lives in Supabase migrations (`generations`,
-`platform_outputs`, the `match_platform_output` and `count_recent_generations`
-functions, and the pgvector HNSW index).
+The full database schema (tables, RLS, pgvector HNSW index, and the
+`match_platform_output`, `count_recent_generations`, and
+`match_similar_generations` functions) is in [`db/schema.sql`](./db/schema.sql)
+— run it against a fresh Supabase/Postgres project to reproduce the backend.
 
 ## API
 
