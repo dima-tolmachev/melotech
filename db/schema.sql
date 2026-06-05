@@ -80,14 +80,15 @@ returns table (id uuid, prompt text, platforms text[], created_at timestamptz, s
 language sql stable
 as $$
   select * from (
-    select distinct on (g.id)
+    -- distinct on prompt: a concept run multiple times appears once (best match)
+    select distinct on (g.prompt)
       g.id, g.prompt, g.platforms, g.created_at,
       1 - (po.embedding <=> query_embedding) as similarity
     from public.platform_outputs po
     join public.generations g on g.id = po.generation_id
     where po.embedding is not null
       and g.id <> exclude_id
-    order by g.id, po.embedding <=> query_embedding
+    order by g.prompt, po.embedding <=> query_embedding
   ) sub
   where sub.similarity >= match_threshold
   order by sub.similarity desc
